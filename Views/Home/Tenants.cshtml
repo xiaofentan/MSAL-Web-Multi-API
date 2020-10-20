@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Tenants";
     IDictionary<string, string> tenants = ViewData["tenants"] as IDictionary<string, string>;
-    if (tenants == null)
+    if (tenants is null)
     {
         tenants = (ViewData["tenants"] as IEnumerable<string>).ToDictionary(name => name);
     }
