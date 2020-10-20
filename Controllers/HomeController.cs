@@ -60,7 +60,10 @@ namespace WebApp_OpenIDConnect_DotNet.Controllers
 
             var tenantIds = await armOperations.EnumerateTenantsIdsAccessibleByUser(accessToken);
 
-            ViewData["tenants"] = tenantIds;
+            var tenantsIdsAndNames = await graphApiOperations.EnumerateTenantsIdAndNameAccessibleByUser(tenantIds,
+                async tenantId => { return await tokenAcquisition.GetAccessTokenForUserAsync(new string[] { "Directory.Read.All" }, tenantId); });
+
+            ViewData["tenants"] = tenantsIdsAndNames;
 
             return View();
         }
@@ -86,9 +89,9 @@ namespace WebApp_OpenIDConnect_DotNet.Controllers
                     await blobClient.UploadAsync(stream);
                     message = "Blob successfully created";
                 }
-                catch
+                catch (Exception ex)
                 {
-                    throw;
+                    message = ex.ToString();
                 }
             }
 
